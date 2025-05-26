@@ -1,0 +1,540 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mapa Mental: Corrente do Tempo das Escolas Literárias</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #fdfaf6; /* Tom de pergaminho claro */
+        }
+        .timeline-container {
+            position: relative;
+            margin: 0 auto;
+            padding: 40px 0;
+            width: 90%;
+            max-width: 1000px;
+        }
+        .timeline-container::after {
+            content: '';
+            position: absolute;
+            width: 6px;
+            background-color: #8B4513; /* Marrom sela (cor de couro) */
+            top: 0;
+            bottom: 0;
+            left: 50%;
+            margin-left: -3px;
+            border-radius: 3px;
+        }
+        .timeline-item {
+            padding: 10px 40px;
+            position: relative;
+            background-color: inherit;
+            width: 50%;
+        }
+        .timeline-item::after {
+            content: '';
+            position: absolute;
+            width: 25px;
+            height: 25px;
+            right: -14px; /* Ajustado para o novo tamanho do ícone */
+            background-color: #fdfaf6;
+            border: 4px solid #DAA520; /* Dourado (ouro velho) */
+            top: 20px; /* Ajustado para centralizar melhor com o conteúdo */
+            border-radius: 50%;
+            z-index: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .timeline-item.left {
+            left: 0;
+        }
+        .timeline-item.right {
+            left: 50%;
+        }
+        .timeline-item.left::before {
+            content: " ";
+            height: 0;
+            position: absolute;
+            top: 27px; /* Ajustado */
+            width: 0;
+            z-index: 1;
+            right: 30px;
+            border: medium solid #c8a079; /* Tom de madeira clara */
+            border-width: 10px 0 10px 10px;
+            border-color: transparent transparent transparent #c8a079;
+        }
+        .timeline-item.right::before {
+            content: " ";
+            height: 0;
+            position: absolute;
+            top: 27px; /* Ajustado */
+            width: 0;
+            z-index: 1;
+            left: 30px;
+            border: medium solid #c8a079; /* Tom de madeira clara */
+            border-width: 10px 10px 10px 0;
+            border-color: transparent #c8a079 transparent transparent;
+        }
+        .timeline-item.right::after {
+            left: -14px; /* Ajustado */
+        }
+        .timeline-content {
+            padding: 20px 30px;
+            background-color: #fff8e1; /* Amarelo pergaminho muito claro */
+            position: relative;
+            border-radius: 8px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            border: 1px solid #e0cda8; /* Borda sutil */
+        }
+        .timeline-content h2 { /* Título da escola literária */
+            color: #5D4037; /* Marrom escuro */
+            border-bottom: 2px solid #DAA520;
+            padding-bottom: 5px;
+            margin-bottom: 10px;
+            font-family: 'Inter', sans-serif; /* Mantém a fonte original para os títulos principais */
+        }
+        .timeline-content h3 { /* Subtítulos dentro do conteúdo colapsável */
+            color: #795548; /* Marrom médio */
+            margin-top: 15px;
+        }
+        .timeline-icon {
+            position: absolute;
+            width: 50px;
+            height: 50px;
+            right: -25px;
+            background-color: #DAA520; /* Dourado */
+            top: 15px;
+            border-radius: 50%;
+            z-index: 2;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 1.5rem;
+            border: 3px solid #fdfaf6;
+        }
+        .timeline-item.right .timeline-icon {
+            left: -25px;
+        }
+
+        /* Responsividade */
+        @media screen and (max-width: 768px) {
+            .timeline-container::after {
+                left: 31px;
+            }
+            .timeline-item {
+                width: 100%;
+                padding-left: 70px;
+                padding-right: 25px;
+            }
+            .timeline-item.left::before, .timeline-item.right::before {
+                left: 60px;
+                border: medium solid #c8a079;
+                border-width: 10px 10px 10px 0;
+                border-color: transparent #c8a079 transparent transparent;
+            }
+            .timeline-item.left::after, .timeline-item.right::after {
+                left: 15px;
+            }
+            .timeline-item.right {
+                left: 0%;
+            }
+            .timeline-item.left .timeline-icon, .timeline-item.right .timeline-icon {
+                left: 5px; /* Ajustado para alinhar com a linha */
+            }
+        }
+
+        .collapsible-content {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.5s ease-out;
+            /* Nova fonte para o conteúdo colapsável */
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+        }
+        /* Aplicar a nova fonte também aos elementos filhos diretos para garantir */
+        .collapsible-content p,
+        .collapsible-content ul,
+        .collapsible-content li,
+        .collapsible-content h3,
+        .collapsible-content strong {
+             font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+        }
+
+        .collapsible-content.open {
+            max-height: 2000px; /* Ajuste conforme necessário */
+        }
+        .toggle-button {
+            cursor: pointer;
+            color: #8B4513;
+            font-weight: bold;
+            margin-top: 10px;
+            display: inline-block;
+            font-family: 'Inter', sans-serif; /* Manter a fonte do botão como Inter ou outra de sua preferência */
+        }
+        .toggle-button i {
+            transition: transform 0.3s ease;
+        }
+        .toggle-button.open i {
+            transform: rotate(180deg);
+        }
+    </style>
+</head>
+<body class="text-gray-800">
+
+    <header class="bg-[#8B4513] text-white p-6 text-center shadow-lg">
+        <h1 class="text-4xl font-bold tracking-tight">
+            <i class="fas fa-scroll mr-3"></i>Corrente do Tempo das Escolas Literárias
+        </h1>
+        <p class="text-lg mt-2">Uma linha do tempo desenvolvida por mim, Henrique Rezende, para compreender a jornada pela literatura da língua portuguesa</p>
+    </header>
+
+    <div class="timeline-container">
+        <div class="timeline-item left">
+            <div class="timeline-icon"><i class="fas fa-music"></i></div>
+            <div class="timeline-content">
+                <h2 class="text-2xl font-semibold">1. Trovadorismo</h2>
+                <div class="collapsible-content">
+                    <p class="mt-2"><strong><i class="fas fa-calendar-alt mr-1"></i> Período:</strong> Século XII ao XIV</p>
+                    <h3 class="text-xl font-semibold mt-3"><i class="fas fa-lightbulb mr-1"></i> Características Principais:</h3>
+                    <ul class="list-disc list-inside mt-1 space-y-1">
+                        <li>Literatura marcada por cantigas (líricas e satíricas).</li>
+                        <li>Linguagem simples e arcaica (galego-português).</li>
+                        <li>Influência da oralidade e da música.</li>
+                        <li>Temas: amor cortês, saudade, crítica social.</li>
+                        <li>Ambiente feudal e teocêntrico.</li>
+                    </ul>
+                    <h3 class="text-xl font-semibold mt-3"><i class="fas fa-user-edit mr-1"></i> Principais Autores/Obras (Portugal):</h3>
+                    <ul class="list-disc list-inside mt-1 space-y-1">
+                        <li>Paio Soares de Taveirós ("Cantiga da Ribeirinha")</li>
+                        <li>Dom Dinis (Rei-Poeta)</li>
+                        <li>Martim Codax, João Garcia de Guilhade, Afonso Sanches</li>
+                    </ul>
+                    <h3 class="text-xl font-semibold mt-3"><i class="fas fa-landmark mr-1"></i> Contexto:</h3>
+                    <p class="mt-1">Idade Média, cultura feudal, influência da Igreja. Cantigas difundidas por trovadores e jograis.</p>
+                </div>
+                <div class="toggle-button" onclick="toggleContent(this)"><i class="fas fa-chevron-down mr-1"></i> Mostrar Mais</div>
+            </div>
+        </div>
+
+        <div class="timeline-item right">
+            <div class="timeline-icon"><i class="fas fa-theater-masks"></i></div>
+            <div class="timeline-content">
+                <h2 class="text-2xl font-semibold">2. Humanismo</h2>
+                 <div class="collapsible-content">
+                    <p class="mt-2"><strong><i class="fas fa-calendar-alt mr-1"></i> Período:</strong> Fim do século XIV ao início do século XVI (Portugal: ~1434-1527)</p>
+                    <h3 class="text-xl font-semibold mt-3"><i class="fas fa-lightbulb mr-1"></i> Características Principais:</h3>
+                    <ul class="list-disc list-inside mt-1 space-y-1">
+                        <li>Transição do teocentrismo para o antropocentrismo.</li>
+                        <li>Valorização da razão e do conhecimento humano.</li>
+                        <li>Inspiração na cultura clássica greco-romana.</li>
+                        <li>Desenvolvimento da prosa historiográfica e do teatro.</li>
+                        <li>Poesia palaciana (mais elaborada).</li>
+                    </ul>
+                    <h3 class="text-xl font-semibold mt-3"><i class="fas fa-user-edit mr-1"></i> Principais Autores/Obras (Portugal):</h3>
+                    <ul class="list-disc list-inside mt-1 space-y-1">
+                        <li>Fernão Lopes ("Crónica de D. João I")</li>
+                        <li>Gil Vicente ("Auto da Barca do Inferno")</li>
+                        <li>Garcia de Resende ("Cancioneiro Geral")</li>
+                    </ul>
+                    <h3 class="text-xl font-semibold mt-3"><i class="fas fa-landmark mr-1"></i> Contexto:</h3>
+                    <p class="mt-1">Transição Idade Média - Renascimento. Expansão marítima.</p>
+                </div>
+                <div class="toggle-button" onclick="toggleContent(this)"><i class="fas fa-chevron-down mr-1"></i> Mostrar Mais</div>
+            </div>
+        </div>
+
+        <div class="timeline-item left">
+            <div class="timeline-icon"><i class="fas fa-ship"></i></div>
+            <div class="timeline-content">
+                <h2 class="text-2xl font-semibold">3. Classicismo (PT) / Quinhentismo (BR)</h2>
+                <div class="collapsible-content">
+                    <h3 class="text-xl font-semibold mt-3 text-amber-700"><i class="fas fa-flag mr-1"></i> Classicismo (Portugal)</h3>
+                    <p class="mt-1"><strong><i class="fas fa-calendar-alt mr-1"></i> Período:</strong> Século XVI (~1527-1580)</p>
+                    <ul class="list-disc list-inside mt-1 space-y-1">
+                        <li>Retomada dos valores da Antiguidade Clássica.</li>
+                        <li>Racionalismo, universalismo, perfeição formal.</li>
+                        <li>Uso da medida nova (decassílabo), sonetos.</li>
+                        <li>Autores: Luís Vaz de Camões ("Os Lusíadas"), Sá de Miranda.</li>
+                    </ul>
+                    <h3 class="text-xl font-semibold mt-3 text-green-700"><i class="fas fa-feather-alt mr-1"></i> Quinhentismo (Brasil)</h3>
+                    <p class="mt-1"><strong><i class="fas fa-calendar-alt mr-1"></i> Período:</strong> Século XVI (a partir de 1500)</p>
+                    <ul class="list-disc list-inside mt-1 space-y-1">
+                        <li>Literatura de informação (descrição da nova terra).</li>
+                        <li>Literatura de catequese (textos jesuíticos).</li>
+                        <li>Autores: Pero Vaz de Caminha ("Carta"), Padre José de Anchieta.</li>
+                    </ul>
+                    <h3 class="text-xl font-semibold mt-3"><i class="fas fa-landmark mr-1"></i> Contexto:</h3>
+                    <p class="mt-1">Auge do Renascimento em Portugal, grandes navegações. Chegada dos portugueses ao Brasil, início da colonização.</p>
+                </div>
+                <div class="toggle-button" onclick="toggleContent(this)"><i class="fas fa-chevron-down mr-1"></i> Mostrar Mais</div>
+            </div>
+        </div>
+
+        <div class="timeline-item right">
+            <div class="timeline-icon"><i class="fas fa-church"></i></div>
+            <div class="timeline-content">
+                <h2 class="text-2xl font-semibold">4. Barroco</h2>
+                <div class="collapsible-content">
+                    <p class="mt-2"><strong><i class="fas fa-calendar-alt mr-1"></i> Período:</strong> PT: Fim séc. XVI - Início séc. XVIII (~1580-1756). BR: Início séc. XVII - Meio séc. XVIII (~1601-1768).</p>
+                    <h3 class="text-xl font-semibold mt-3"><i class="fas fa-lightbulb mr-1"></i> Características Principais:</h3>
+                    <ul class="list-disc list-inside mt-1 space-y-1">
+                        <li>Arte do conflito, dualidade (fé x razão).</li>
+                        <li>Linguagem rebuscada, cultismo e conceptismo.</li>
+                        <li>Intensidade dramática, pessimismo, fugacidade do tempo.</li>
+                    </ul>
+                    <h3 class="text-xl font-semibold mt-3"><i class="fas fa-user-edit mr-1"></i> Principais Autores/Obras:</h3>
+                    <ul class="list-disc list-inside mt-1 space-y-1">
+                        <li>PT: Padre António Vieira (sermões), Francisco Rodrigues Lobo.</li>
+                        <li>BR: Gregório de Matos Guerra ("Boca do Inferno"), Bento Teixeira.</li>
+                    </ul>
+                    <h3 class="text-xl font-semibold mt-3"><i class="fas fa-landmark mr-1"></i> Contexto:</h3>
+                    <p class="mt-1">Contrarreforma Católica. Crise em Portugal (União Ibérica). Brasil: ciclo da cana-de-açúcar.</p>
+                </div>
+                <div class="toggle-button" onclick="toggleContent(this)"><i class="fas fa-chevron-down mr-1"></i> Mostrar Mais</div>
+            </div>
+        </div>
+
+        <div class="timeline-item left">
+            <div class="timeline-icon"><i class="fas fa-leaf"></i></div>
+            <div class="timeline-content">
+                <h2 class="text-2xl font-semibold">5. Arcadismo (Neoclassicismo)</h2>
+                <div class="collapsible-content">
+                    <p class="mt-2"><strong><i class="fas fa-calendar-alt mr-1"></i> Período:</strong> PT: Meados séc. XVIII (~1756-1825). BR: Segunda metade séc. XVIII (~1768-1836).</p>
+                    <h3 class="text-xl font-semibold mt-3"><i class="fas fa-lightbulb mr-1"></i> Características Principais:</h3>
+                    <ul class="list-disc list-inside mt-1 space-y-1">
+                        <li>Retomada dos ideais clássicos, oposição ao Barroco.</li>
+                        <li>Simplicidade, clareza, valorização da natureza (bucolismo).</li>
+                        <li>Racionalismo, objetividade, *carpe diem* sereno.</li>
+                    </ul>
+                    <h3 class="text-xl font-semibold mt-3"><i class="fas fa-user-edit mr-1"></i> Principais Autores/Obras:</h3>
+                    <ul class="list-disc list-inside mt-1 space-y-1">
+                        <li>PT: Manuel Maria Barbosa du Bocage, António Dinis da Cruz e Silva.</li>
+                        <li>BR: Cláudio Manuel da Costa ("Obras Poéticas"), Tomás Antônio Gonzaga ("Marília de Dirceu").</li>
+                    </ul>
+                    <h3 class="text-xl font-semibold mt-3"><i class="fas fa-landmark mr-1"></i> Contexto:</h3>
+                    <p class="mt-1">Iluminismo. Portugal: período pombalino. Brasil: ciclo do ouro, Inconfidência Mineira.</p>
+                </div>
+                <div class="toggle-button" onclick="toggleContent(this)"><i class="fas fa-chevron-down mr-1"></i> Mostrar Mais</div>
+            </div>
+        </div>
+
+        <div class="timeline-item right">
+            <div class="timeline-icon"><i class="fas fa-heart"></i></div>
+            <div class="timeline-content">
+                <h2 class="text-2xl font-semibold">6. Romantismo</h2>
+                <div class="collapsible-content">
+                    <p class="mt-2"><strong><i class="fas fa-calendar-alt mr-1"></i> Período:</strong> PT: Início séc. XIX (~1825-1865). BR: Início séc. XIX (~1836-1881).</p>
+                    <h3 class="text-xl font-semibold mt-3"><i class="fas fa-lightbulb mr-1"></i> Características Principais:</h3>
+                    <ul class="list-disc list-inside mt-1 space-y-1">
+                        <li>Subjetivismo, egocentrismo, sentimentalismo exacerbado.</li>
+                        <li>Nacionalismo, indianismo (BR), escapismo.</li>
+                        <li>Liberdade de criação, "mal do século".</li>
+                    </ul>
+                    <h3 class="text-xl font-semibold mt-3"><i class="fas fa-user-edit mr-1"></i> Principais Autores/Obras:</h3>
+                    <ul class="list-disc list-inside mt-1 space-y-1">
+                        <li>PT: Almeida Garrett, Alexandre Herculano, Camilo Castelo Branco.</li>
+                        <li>BR (Poesia): Gonçalves Dias, Álvares de Azevedo, Castro Alves.</li>
+                        <li>BR (Prosa): José de Alencar, Manuel Antônio de Almeida.</li>
+                    </ul>
+                    <h3 class="text-xl font-semibold mt-3"><i class="fas fa-landmark mr-1"></i> Contexto:</h3>
+                    <p class="mt-1">Ascensão da burguesia, Revolução Francesa. Brasil: Independência, construção da identidade nacional.</p>
+                </div>
+                <div class="toggle-button" onclick="toggleContent(this)"><i class="fas fa-chevron-down mr-1"></i> Mostrar Mais</div>
+            </div>
+        </div>
+
+        <div class="timeline-item left">
+            <div class="timeline-icon"><i class="fas fa-microscope"></i></div>
+            <div class="timeline-content">
+                <h2 class="text-2xl font-semibold">7. Realismo / Naturalismo</h2>
+                <div class="collapsible-content">
+                    <p class="mt-2"><strong><i class="fas fa-calendar-alt mr-1"></i> Período:</strong> PT: Segunda metade séc. XIX (~1865-1890). BR: Segunda metade séc. XIX (~1881-1902).</p>
+                    <h3 class="text-xl font-semibold mt-3 text-blue-700"><i class="fas fa-book-open mr-1"></i> Realismo:</h3>
+                    <ul class="list-disc list-inside mt-1 space-y-1">
+                        <li>Objetividade, crítica social (burguesia).</li>
+                        <li>Análise psicológica, linguagem direta.</li>
+                    </ul>
+                     <h3 class="text-xl font-semibold mt-3 text-red-700"><i class="fas fa-dna mr-1"></i> Naturalismo:</h3>
+                    <ul class="list-disc list-inside mt-1 space-y-1">
+                        <li>Radicalização do Realismo, determinismo.</li>
+                        <li>Temas: patologias sociais, vícios, personagens animalizadas.</li>
+                    </ul>
+                    <h3 class="text-xl font-semibold mt-3"><i class="fas fa-user-edit mr-1"></i> Principais Autores/Obras:</h3>
+                    <ul class="list-disc list-inside mt-1 space-y-1">
+                        <li>PT (Realismo): Eça de Queirós ("O Primo Basílio"), Antero de Quental.</li>
+                        <li>BR (Realismo): Machado de Assis ("Memórias Póstumas de Brás Cubas").</li>
+                        <li>BR (Naturalismo): Aluísio Azevedo ("O Cortiço"), Raul Pompeia ("O Ateneu").</li>
+                    </ul>
+                    <h3 class="text-xl font-semibold mt-3"><i class="fas fa-landmark mr-1"></i> Contexto:</h3>
+                    <p class="mt-1">Segunda Revolução Industrial, avanços científicos (Positivismo, Darwinismo). Crise da monarquia no Brasil.</p>
+                </div>
+                <div class="toggle-button" onclick="toggleContent(this)"><i class="fas fa-chevron-down mr-1"></i> Mostrar Mais</div>
+            </div>
+        </div>
+
+        <div class="timeline-item right">
+            <div class="timeline-icon"><i class="fas fa-gem"></i></div>
+            <div class="timeline-content">
+                <h2 class="text-2xl font-semibold">8. Parnasianismo (Brasil)</h2>
+                <div class="collapsible-content">
+                    <p class="mt-2"><strong><i class="fas fa-calendar-alt mr-1"></i> Período:</strong> Fim do séc. XIX (~1882-1902 no Brasil).</p>
+                    <h3 class="text-xl font-semibold mt-3"><i class="fas fa-lightbulb mr-1"></i> Características Principais:</h3>
+                    <ul class="list-disc list-inside mt-1 space-y-1">
+                        <li>"A arte pela arte", perfeição formal.</li>
+                        <li>Objetividade, impessoalidade, rigor métrico.</li>
+                        <li>Linguagem culta, temas descritivos, mitológicos.</li>
+                    </ul>
+                    <h3 class="text-xl font-semibold mt-3"><i class="fas fa-user-edit mr-1"></i> Principais Autores/Obras (Brasil):</h3>
+                    <ul class="list-disc list-inside mt-1 space-y-1">
+                        <li>Tríade: Olavo Bilac ("Profissão de Fé"), Alberto de Oliveira, Raimundo Correia.</li>
+                        <li>Vicente de Carvalho.</li>
+                    </ul>
+                    <h3 class="text-xl font-semibold mt-3"><i class="fas fa-landmark mr-1"></i> Contexto:</h3>
+                    <p class="mt-1">República Velha no Brasil. Influência do positivismo. Reação ao Romantismo.</p>
+                </div>
+                <div class="toggle-button" onclick="toggleContent(this)"><i class="fas fa-chevron-down mr-1"></i> Mostrar Mais</div>
+            </div>
+        </div>
+
+        <div class="timeline-item left">
+            <div class="timeline-icon"><i class="fas fa-moon"></i></div>
+            <div class="timeline-content">
+                <h2 class="text-2xl font-semibold">9. Simbolismo</h2>
+                <div class="collapsible-content">
+                    <p class="mt-2"><strong><i class="fas fa-calendar-alt mr-1"></i> Período:</strong> Fim séc. XIX - Início séc. XX. (PT: ~1890-1915; BR: ~1893-1902).</p>
+                    <h3 class="text-xl font-semibold mt-3"><i class="fas fa-lightbulb mr-1"></i> Características Principais:</h3>
+                    <ul class="list-disc list-inside mt-1 space-y-1">
+                        <li>Subjetivismo, musicalidade, uso de símbolos.</li>
+                        <li>Sugestão, mistério, transcendentalismo.</li>
+                        <li>Temas: morte, sonho, espiritualidade, inconsciente.</li>
+                    </ul>
+                    <h3 class="text-xl font-semibold mt-3"><i class="fas fa-user-edit mr-1"></i> Principais Autores/Obras:</h3>
+                    <ul class="list-disc list-inside mt-1 space-y-1">
+                        <li>PT: Eugénio de Castro ("Oaristos"), António Nobre, Camilo Pessanha.</li>
+                        <li>BR: Cruz e Sousa ("Missal", "Broquéis"), Alphonsus de Guimaraens.</li>
+                        <li>Augusto dos Anjos ("Eu" - transição).</li>
+                    </ul>
+                    <h3 class="text-xl font-semibold mt-3"><i class="fas fa-landmark mr-1"></i> Contexto:</h3>
+                    <p class="mt-1">Crise de fim de século (Belle Époque). Interesse pelo ocultismo, misticismo.</p>
+                </div>
+                <div class="toggle-button" onclick="toggleContent(this)"><i class="fas fa-chevron-down mr-1"></i> Mostrar Mais</div>
+            </div>
+        </div>
+
+        <div class="timeline-item right">
+            <div class="timeline-icon"><i class="fas fa-train"></i></div>
+            <div class="timeline-content">
+                <h2 class="text-2xl font-semibold">10. Pré-Modernismo (Brasil)</h2>
+                <div class="collapsible-content">
+                    <p class="mt-2"><strong><i class="fas fa-calendar-alt mr-1"></i> Período:</strong> Início do séc. XX (~1902-1922 no Brasil).</p>
+                    <h3 class="text-xl font-semibold mt-3"><i class="fas fa-lightbulb mr-1"></i> Características Principais:</h3>
+                    <ul class="list-disc list-inside mt-1 space-y-1">
+                        <li>Período de transição, ruptura com o academicismo.</li>
+                        <li>Interesse pela realidade brasileira, regionalismos.</li>
+                        <li>Linguagem mais simples, denúncia social.</li>
+                    </ul>
+                    <h3 class="text-xl font-semibold mt-3"><i class="fas fa-user-edit mr-1"></i> Principais Autores/Obras (Brasil):</h3>
+                    <ul class="list-disc list-inside mt-1 space-y-1">
+                        <li>Euclides da Cunha ("Os Sertões")</li>
+                        <li>Lima Barreto ("Triste Fim de Policarpo Quaresma")</li>
+                        <li>Monteiro Lobato ("Urupês")</li>
+                        <li>Graça Aranha ("Canaã")</li>
+                    </ul>
+                    <h3 class="text-xl font-semibold mt-3"><i class="fas fa-landmark mr-1"></i> Contexto:</h3>
+                    <p class="mt-1">Brasil da República Velha, tensões sociais. Antecedentes da Semana de Arte Moderna.</p>
+                </div>
+                <div class="toggle-button" onclick="toggleContent(this)"><i class="fas fa-chevron-down mr-1"></i> Mostrar Mais</div>
+            </div>
+        </div>
+
+        <div class="timeline-item left">
+            <div class="timeline-icon"><i class="fas fa-palette"></i></div>
+            <div class="timeline-content">
+                <h2 class="text-2xl font-semibold">11. Modernismo</h2>
+                <div class="collapsible-content">
+                    <h3 class="text-xl font-semibold mt-3 text-amber-700"><i class="fas fa-flag mr-1"></i> Modernismo em Portugal (a partir de 1915)</h3>
+                    <ul class="list-disc list-inside mt-1 space-y-1">
+                        <li><strong>Orfismo:</strong> Ruptura radical, experimentalismo. Autores: Fernando Pessoa, Mário de Sá-Carneiro.</li>
+                        <li><strong>Presencismo:</strong> Foco na literatura viva, psicologia. Autores: José Régio, Miguel Torga.</li>
+                        <li><strong>Neorrealismo:</strong> Engajamento social. Autores: Alves Redol, Ferreira de Castro.</li>
+                    </ul>
+                    <h3 class="text-xl font-semibold mt-3 text-green-700"><i class="fas fa-feather-alt mr-1"></i> Modernismo no Brasil (a partir de 1922)</h3>
+                    <ul class="list-disc list-inside mt-1 space-y-1">
+                        <li><strong>1ª Fase (Heroica):</strong> Semana de 22, ruptura, identidade nacional. Autores: Mário de Andrade, Oswald de Andrade, Manuel Bandeira.</li>
+                        <li><strong>2ª Fase (Geração de 30):</strong> Amadurecimento, prosa regionalista, poesia reflexiva. Autores: Carlos Drummond de Andrade, Graciliano Ramos, Jorge Amado, Cecília Meireles.</li>
+                        <li><strong>3ª Fase (Geração de 45):</strong> Rigor formal, prosa intimista, experimentalismo. Autores: João Cabral de Melo Neto, Clarice Lispector, Guimarães Rosa.</li>
+                    </ul>
+                     <h3 class="text-xl font-semibold mt-3"><i class="fas fa-landmark mr-1"></i> Contexto:</h3>
+                    <p class="mt-1">PT: Instabilidade política, vanguardas europeias. BR: Era Vargas, industrialização, busca por cultura brasileira.</p>
+                </div>
+                <div class="toggle-button" onclick="toggleContent(this)"><i class="fas fa-chevron-down mr-1"></i> Mostrar Mais</div>
+            </div>
+        </div>
+
+        <div class="timeline-item right">
+            <div class="timeline-icon"><i class="fas fa-globe-americas"></i></div>
+            <div class="timeline-content">
+                <h2 class="text-2xl font-semibold">12. Pós-Modernismo / Contemporâneo</h2>
+                <div class="collapsible-content">
+                    <p class="mt-2"><strong><i class="fas fa-calendar-alt mr-1"></i> Período:</strong> A partir de meados do século XX até os dias atuais.</p>
+                    <h3 class="text-xl font-semibold mt-3"><i class="fas fa-lightbulb mr-1"></i> Características Principais:</h3>
+                    <ul class="list-disc list-inside mt-1 space-y-1">
+                        <li>Pluralidade de estilos e temas, experimentalismo.</li>
+                        <li>Revisão crítica do passado, temas urbanos, identidade.</li>
+                        <li>Influência da cultura de massa, tecnologia, globalização.</li>
+                        <li>Metalinguagem, fragmentação, intertextualidade.</li>
+                        <li>Poesia: concretismo, poesia marginal. Prosa: realismo mágico, miniconto.</li>
+                    </ul>
+                    <h3 class="text-xl font-semibold mt-3"><i class="fas fa-user-edit mr-1"></i> Principais Autores/Obras (Exemplos):</h3>
+                    <ul class="list-disc list-inside mt-1 space-y-1">
+                        <li>PT: José Saramago, António Lobo Antunes, Sophia de Mello Breyner.</li>
+                        <li>BR (Poesia): Ferreira Gullar, Haroldo de Campos, Adélia Prado, Paulo Leminski.</li>
+                        <li>BR (Prosa): Lygia Fagundes Telles, Dalton Trevisan, Rubem Fonseca, Conceição Evaristo, Itamar Vieira Junior.</li>
+                    </ul>
+                    <h3 class="text-xl font-semibold mt-3"><i class="fas fa-landmark mr-1"></i> Contexto:</h3>
+                    <p class="mt-1">Pós-Guerras, Guerra Fria, ditaduras, redemocratização, globalização. Complexidade do mundo contemporâneo.</p>
+                </div>
+                <div class="toggle-button" onclick="toggleContent(this)"><i class="fas fa-chevron-down mr-1"></i> Mostrar Mais</div>
+            </div>
+        </div>
+
+    </div>
+
+    <footer class="bg-[#8B4513] text-white p-4 text-center mt-10">
+        <p>&copy; <span id="currentYear"></span> Mapa Mental Literário. Henrique Rezende 3A - Etec Taboão da Serra.</p>
+    </footer>
+
+    <script>
+        document.getElementById('currentYear').textContent = new Date().getFullYear();
+
+        // Inicializa todos os conteúdos como fechados
+        document.querySelectorAll('.collapsible-content').forEach(content => {
+            content.style.maxHeight = '0px';
+        });
+        document.querySelectorAll('.toggle-button').forEach(button => {
+            button.innerHTML = '<i class="fas fa-chevron-down mr-1"></i> Mostrar Mais';
+        });
+
+
+        function toggleContent(button) {
+            const content = button.previousElementSibling;
+            // const icon = button.querySelector('i'); // Não é mais necessário para mudar o texto do botão
+            if (content.style.maxHeight === '0px' || content.style.maxHeight === '') {
+                content.style.maxHeight = content.scrollHeight + "px";
+                button.innerHTML = '<i class="fas fa-chevron-up mr-1"></i> Mostrar Menos';
+                button.classList.add('open');
+            } else {
+                content.style.maxHeight = "0px";
+                button.innerHTML = '<i class="fas fa-chevron-down mr-1"></i> Mostrar Mais';
+                button.classList.remove('open');
+            }
+        }
+    </script>
+
+</body>
+</html>
